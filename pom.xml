@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>br.com.ndrewcoding</groupId>
 	<artifactId>springboot2-essentials</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>springboot2-essentials</name>
 	<description>Curso de Spring Boot do DevDojo</description>
 
@@ -19,14 +19,47 @@
 		<java.version>11</java.version>
 		<org.mapstruct.version>1.4.0.Final</org.mapstruct.version>
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<springdoc-openapi-ui.version>1.4.8</springdoc-openapi-ui.version>
+		<docker.distroless.image>gcr.io/distroless/java:11</docker.distroless.image>
+		<docker.repo.url>andrew2609</docker.repo.url>
+		<docker.repo.project>springboot2-essentials</docker.repo.project>
+		<docker.image.name>${docker.repo.url}/${docker.repo.project}</docker.image.name>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${springdoc-openapi-ui.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-data-rest</artifactId>
+			<version>${springdoc-openapi-ui.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-security</artifactId>
+			<version>${springdoc-openapi-ui.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
@@ -77,7 +110,7 @@
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -90,7 +123,7 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
-	
+
 	<profiles>
 		<profile>
 			<id>integration-tests</id>
@@ -111,18 +144,37 @@
 			</build>
 		</profile>
 	</profiles>
-	
+
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>2.6.0</version>
+				<configuration>
+					<from>
+						<image>${docker.distroless.image}</image>
+					</from>
+					<to>
+						<image>${docker.image.name}</image>
+						<tags>
+							<tag>${project.version}</tag>
+						</tags>
+					</to>
+					<container>
+						<mainClass>br.com.ndrewcoding.springboot2.Springboot2EssentialsApplication</mainClass>
+					</container>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>11</source>
 					<target>11</target>
@@ -145,7 +197,7 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 
